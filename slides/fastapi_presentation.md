@@ -5,13 +5,23 @@ paginate: true
 backgroundColor: #fff
 header: 'Cleveland Python Meetup January 2025'
 footer: 'Jan 13, 2026'
+style: |
+  section.lead {
+    text-align: center;
+    justify-content: center;
+  }
 ---
 
+<!-- _class: lead -->
+
 # FastAPI
-## High Performance, Easy to Learn, Fast to Code, Ready for Production
+## Building High-Performance APIs with Modern Python
 
 
--- Anurag Saxena
+Anurag Saxena
+
+Clepy and ClePyLadies
+Jan 2026
 
 ---
 
@@ -212,6 +222,7 @@ async def read_results():
 - **Integration**: Tightly coupled with the Dependency Injection system.
   - Simply depend on `get_current_user` in your route.
 - **OpenAPI**: Security schemes are automatically added to the interactive docs (the "Authorize" button).
+- Docs link: https://fastapi.tiangolo.com/tutorial/security/first-steps/
 
 ---
 
@@ -322,4 +333,3 @@ async def websocket_endpoint(websocket: WebSocket):
 3.  **Documentation**: Free, always up-to-date API docs.
 4.  **Modern**: Learns from the past (Django/Flask) and adopts the future (Async/Types).
 
-**Time to Build!** 🚀
