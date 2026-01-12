@@ -8,6 +8,12 @@ from models import Ingredient
 
 @pytest.fixture(name="session")
 def session_fixture():
+    """
+    Pytest fixture to create a fresh in-memory database session for each test.
+    
+    - Uses 'sqlite://' for an in-memory database.
+    - StaticPool is used because in-memory SQLite is thread-sensitive.
+    """
     engine = create_engine(
         "sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool
     )
@@ -17,6 +23,13 @@ def session_fixture():
 
 @pytest.fixture(name="client")
 def client_fixture(session: Session):
+    """
+    Pytest fixture to create a TestClient with the database session overridden.
+    
+    - app.dependency_overrides allows us to swap the real get_session dependency
+      with a lambda that returns our test session.
+    - This ensures tests run against the in-memory database, not the real one.
+    """
     def get_session_override():
         return session
 
@@ -26,6 +39,9 @@ def client_fixture(session: Session):
     app.dependency_overrides.clear()
 
 def test_create_ingredient(client: TestClient):
+    """
+    Test the create ingredient endpoint.
+    """
     response = client.post(
         "/ingredients/",
         json={"name": "Test Bun", "category": "Bread", "quantity": 10},
@@ -39,6 +55,10 @@ def test_create_ingredient(client: TestClient):
     assert data["id"] is not None
 
 def test_read_ingredients(client: TestClient):
+    """
+    Test reading a list of ingredients.
+    """
+    # Create some data first
     client.post(
         "/ingredients/",
         json={"name": "Test Bun", "category": "Bread", "quantity": 10},
@@ -57,6 +77,9 @@ def test_read_ingredients(client: TestClient):
     assert data[1]["name"] == "Test Sausage"
 
 def test_read_ingredient(client: TestClient):
+    """
+    Test reading a single ingredient by ID.
+    """
     response = client.post(
         "/ingredients/",
         json={"name": "Unique Ingredient", "category": "Special", "quantity": 1},
@@ -71,12 +94,16 @@ def test_read_ingredient(client: TestClient):
     assert data["id"] == ingredient_id
 
 def test_update_ingredient(client: TestClient):
+    """
+    Test updating an ingredient.
+    """
     response = client.post(
         "/ingredients/",
         json={"name": "Old Name", "category": "Old Cat", "quantity": 1},
     )
     ingredient_id = response.json()["id"]
 
+    # Partial update: only name and quantity
     response = client.patch(
         f"/ingredients/{ingredient_id}",
         json={"name": "New Name", "quantity": 5},
@@ -89,6 +116,9 @@ def test_update_ingredient(client: TestClient):
     assert data["category"] == "Old Cat"  # Should remain unchanged
 
 def test_delete_ingredient(client: TestClient):
+    """
+    Test deleting an ingredient.
+    """
     response = client.post(
         "/ingredients/",
         json={"name": "To Delete", "category": "Trash", "quantity": 1},
@@ -99,5 +129,6 @@ def test_delete_ingredient(client: TestClient):
     assert response.status_code == 200
     assert response.json() == {"ok": True}
 
+    # Verify it's gone
     response = client.get(f"/ingredients/{ingredient_id}")
     assert response.status_code == 404
