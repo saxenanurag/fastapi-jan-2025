@@ -38,9 +38,9 @@ Jan 2026
 # Introduction
 ## What is FastAPI?
 
-> "FastAPI is a modern, fast (high-performance), web framework for building APIs with Python 3.6+ based on standard Python type hints."
+> "FastAPI is a modern, fast (high-performance), web framework for building APIs with Python based on standard Python type hints."
 
-- **Modern**: Built on recent standards (Python 3.6+, OpenAPI, JSON Schema).
+- **Modern**: Built on recent standards (Python 3.10+, OpenAPI, JSON Schema).
 - **Fast**: Comparable to NodeJS and Go (thanks to Starlette and Pydantic).
 - **Typed**: Heavy use of Python Type Hints for validation and documentation.
 
@@ -303,6 +303,10 @@ async def websocket_endpoint(websocket: WebSocket):
         data = await websocket.receive_text()
         await websocket.send_text(f"Message text was: {data}")
 ```
+
+---
+
+# Demo
 
 ---
 
