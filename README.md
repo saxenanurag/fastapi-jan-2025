@@ -48,7 +48,8 @@ The `code_example` directory contains a simple API for managing a database of in
 To run the tests using `pytest`:
 
 ```bash
-uv run pytest
+cd ./code_example/
+PYTHONPATH=. uv run pytest
 ```
 
 ## Presentation
