@@ -51,9 +51,16 @@ Jan 2026
 | Feature | FastAPI | Django | Flask |
 | :--- | :--- | :--- | :--- |
 | **Type** | Micro-framework (Async) | Monolithic "Batteries Included" | Micro-framework (Sync) |
+| **Server Side Rendering** | No | Yes | Yes (using Jinja Templates) |
 | **Performance** | Very High (ASGI) | Good (WSGI, heavier) | Good (WSGI) |
 | **Async** | First-class | Added later (Partial) | Via extensions/Quart |
 | **Validation** | Pydantic | Forms / DRF | Extensions (Marshmallow) |
+
+---
+# Comparing FastAPI vs. Django vs. Flask
+
+| Feature | FastAPI | Django | Flask |
+| :--- | :--- | :--- | :--- |
 | **Docs** | Automatic | Extensions (drf-yasg) | Extensions (Flask-RESTX) |
 
 ---
