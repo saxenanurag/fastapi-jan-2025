@@ -1,10 +1,15 @@
-from typing import List
-from fastapi import FastAPI, Depends, HTTPException, Query
-from sqlmodel import Session, select
 from contextlib import asynccontextmanager
+from typing import List
 
 from database import create_db_and_tables, get_session
-from models import Ingredient, IngredientCreate, IngredientRead, IngredientUpdate
+from fastapi import Depends, FastAPI, HTTPException, Query
+from models import (
+    Ingredient,
+    IngredientCreate,
+    IngredientRead,
+    IngredientUpdate,
+)
+from sqlmodel import Session, select
 
 
 @asynccontextmanager
@@ -28,7 +33,7 @@ def create_ingredient(
 ):
     """
     Create a new ingredient.
-    
+
     - **ingredient**: The data for the new ingredient (validated by IngredientCreate model).
     - **session**: Database session dependency.
     """
@@ -36,7 +41,7 @@ def create_ingredient(
     db_ingredient = Ingredient.model_validate(ingredient)
     session.add(db_ingredient)
     session.commit()
-    session.refresh(db_ingredient) # Refresh to get the generated ID
+    session.refresh(db_ingredient)  # Refresh to get the generated ID
     return db_ingredient
 
 
@@ -48,17 +53,21 @@ def read_ingredients(
 ):
     """
     Read a list of ingredients with pagination.
-    
+
     - **offset**: Number of items to skip.
     - **limit**: Maximum number of items to return (max 100).
     """
     # Select all ingredients with offset and limit
-    ingredients = session.exec(select(Ingredient).offset(offset).limit(limit)).all()
+    ingredients = session.exec(
+        select(Ingredient).offset(offset).limit(limit)
+    ).all()
     return ingredients
 
 
 @app.get("/ingredients/{ingredient_id}", response_model=IngredientRead)
-def read_ingredient(ingredient_id: int, session: Session = Depends(get_session)):
+def read_ingredient(
+    ingredient_id: int, session: Session = Depends(get_session)
+):
     """
     Read a single ingredient by ID.
     """
@@ -80,12 +89,12 @@ def update_ingredient(
     db_ingredient = session.get(Ingredient, ingredient_id)
     if not db_ingredient:
         raise HTTPException(status_code=404, detail="Ingredient not found")
-    
+
     # exclude_unset=True only includes fields that were actually sent in the request
     ingredient_data = ingredient.model_dump(exclude_unset=True)
     for key, value in ingredient_data.items():
         setattr(db_ingredient, key, value)
-        
+
     session.add(db_ingredient)
     session.commit()
     session.refresh(db_ingredient)
@@ -93,7 +102,9 @@ def update_ingredient(
 
 
 @app.delete("/ingredients/{ingredient_id}")
-def delete_ingredient(ingredient_id: int, session: Session = Depends(get_session)):
+def delete_ingredient(
+    ingredient_id: int, session: Session = Depends(get_session)
+):
     """
     Delete an ingredient by ID.
     """
